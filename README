@@ -1,0 +1,6 @@
+##node spreadsheet
+this is a solution to read excel files
+
+var spreadsheet=require('node_spreadsheet')
+//test:
+spreadsheet.read(__dirname+"/Book1.xls",function(obj){console.log(obj);});
