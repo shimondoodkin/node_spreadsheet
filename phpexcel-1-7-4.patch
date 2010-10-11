@@ -1,0 +1,147 @@
+diff -upr orig/Classes/PHPExcel/Style/NumberFormat.php phpexcel/Classes/PHPExcel/Style/NumberFormat.php
+--- orig/Classes/PHPExcel/Style/NumberFormat.php	2010-08-26 17:47:10.000000000 +0300
++++ phpexcel/Classes/PHPExcel/Style/NumberFormat.php	2010-10-11 00:48:41.427561891 +0200
+@@ -502,14 +502,59 @@ class PHPExcel_Style_NumberFormat implem
+ 	 * @param array		$callBack	Callback function for additional formatting of string
+ 	 * @return string	Formatted string
+ 	 */
+-	public static function toFormattedString($value = '', $format = '', $callBack = null)
++
++/*
++	// Pre-defined formats 
++	const FORMAT_GENERAL					= 'General';
++
++	const FORMAT_TEXT						= '@';
++
++	const FORMAT_NUMBER						= '0';
++	const FORMAT_NUMBER_00					= '0.00';
++	const FORMAT_NUMBER_COMMA_SEPARATED1	= '#,##0.00';
++	const FORMAT_NUMBER_COMMA_SEPARATED2	= '#,##0.00_-';
++
++	const FORMAT_PERCENTAGE					= '0%';
++	const FORMAT_PERCENTAGE_00				= '0.00%';
++
++	const FORMAT_DATE_YYYYMMDD2				= 'yyyy-mm-dd';
++	const FORMAT_DATE_YYYYMMDD				= 'yy-mm-dd';
++	const FORMAT_DATE_DDMMYYYY				= 'dd/mm/yy';
++	const FORMAT_DATE_DMYSLASH				= 'd/m/y';
++	const FORMAT_DATE_DMYMINUS				= 'd-m-y';
++	const FORMAT_DATE_DMMINUS				= 'd-m';
++	const FORMAT_DATE_MYMINUS				= 'm-y';
++	const FORMAT_DATE_XLSX14				= 'mm-dd-yy';
++	const FORMAT_DATE_XLSX15				= 'd-mmm-yy';
++	const FORMAT_DATE_XLSX16				= 'd-mmm';
++	const FORMAT_DATE_XLSX17				= 'mmm-yy';
++	const FORMAT_DATE_XLSX22				= 'm/d/yy h:mm';
++	const FORMAT_DATE_DATETIME				= 'd/m/y h:mm';
++	const FORMAT_DATE_TIME1					= 'h:mm AM/PM';
++	const FORMAT_DATE_TIME2					= 'h:mm:ss AM/PM';
++	const FORMAT_DATE_TIME3					= 'h:mm';
++	const FORMAT_DATE_TIME4					= 'h:mm:ss';
++	const FORMAT_DATE_TIME5					= 'mm:ss';
++	const FORMAT_DATE_TIME6					= 'h:mm:ss';
++	const FORMAT_DATE_TIME7					= 'i:s.S';
++	const FORMAT_DATE_TIME8					= 'h:mm:ss;@';
++	const FORMAT_DATE_YYYYMMDDSLASH			= 'yy/mm/dd;@';
++
++	const FORMAT_CURRENCY_USD_SIMPLE		= '"$"#,##0.00_-';
++	const FORMAT_CURRENCY_USD				= '$#,##0_-';
++	const FORMAT_CURRENCY_EUR_SIMPLE		= '[$EUR ]#,##0.00_-';
++*/
++
++	public static function toFormattedString($value = '', $format = '', $callBack = null, $toArrayDateFormat = false)
+ 	{
+ 		// For now we do not treat strings although section 4 of a format code affects strings
+ 		if (!is_numeric($value)) return $value;
+ 
+ 		// For 'General' format code, we just pass the value although this is not entirely the way Excel does it,
+ 		// it seems to round numbers to a total of 10 digits.
+-		if ($format === 'General') {
++		if ($format === 'General'
++      ||$format === '@'// added this, without it, it was braking phone numbers like 054-12345678
++      ) {
+ 			return $value;
+ 		}
+ 
+@@ -580,7 +625,12 @@ class PHPExcel_Style_NumberFormat implem
+ 			}
+ 
+ 			$dateObj = PHPExcel_Shared_Date::ExcelToPHPObject($value);
+-			$value = $dateObj->format($format);
++			
++			if($toArrayDateFormat!==false)
++			 $value = $dateObj->format($toArrayDateFormat);
++			else
++		   $value = $dateObj->format($format);
++			 
+ 
+ 		} else if (preg_match('/%$/', $format)) { // % number format
+ 			if ($format === self::FORMAT_PERCENTAGE) {
+diff -upr orig/Classes/PHPExcel/Worksheet.php phpexcel/Classes/PHPExcel/Worksheet.php
+--- orig/Classes/PHPExcel/Worksheet.php	2010-08-26 17:47:10.000000000 +0300
++++ phpexcel/Classes/PHPExcel/Worksheet.php	2010-10-11 00:51:46.658977263 +0200
+@@ -303,6 +303,13 @@ class PHPExcel_Worksheet implements PHPE
+ 	 * @var PHPExcel_Style_Color
+ 	 */
+ 	private $_tabColor;
++  
++  /**
++	 * to Array Date Format
++	 *
++	 * @var PHPExcel_Style_Color
++	 */
++	private $_toArrayDateFormat = false;
+ 
+ 	/**
+ 	 * Create a new worksheet
+@@ -350,6 +357,7 @@ class PHPExcel_Worksheet implements PHPE
+ 
+     	// Default column dimension
+     	$this->_defaultColumnDimension = new PHPExcel_Worksheet_ColumnDimension(null);
++    	
+ 	}
+ 
+ 
+@@ -624,6 +632,20 @@ class PHPExcel_Worksheet implements PHPE
+ 		return $this;
+     }
+ 
++    /**
++     * Set toArray date format
++     *
++     * @param string $pValue String containing the date format for PHPDateObject->format(...)
++     */
++    public function setToArrayDateFormat($pValue = false)
++    {
++			$this->_toArrayDateFormat=$pValue;
++		}
++    public function getToArrayDateFormat()
++    {
++			return $this->_toArrayDateFormat;
++		}
++		
+ 	/**
+ 	 * Get title
+ 	 *
+@@ -638,7 +660,7 @@ class PHPExcel_Worksheet implements PHPE
+      * Set title
+      *
+      * @param string $pValue String containing the dimension of this worksheet
+-	 * @return PHPExcel_Worksheet
++	   * @return PHPExcel_Worksheet
+      */
+     public function setTitle($pValue = 'Worksheet')
+     {
+@@ -2137,10 +2159,9 @@ class PHPExcel_Worksheet implements PHPE
+ 	    					$returnValue[$row][$column] = $cell->getValue();
+ 	    				}
+     				}
+-
+ 					$style = $this->_parent->getCellXfByIndex($cell->getXfIndex());
+ 
+-    				$returnValue[$row][$column] = PHPExcel_Style_NumberFormat::toFormattedString($returnValue[$row][$column], $style->getNumberFormat()->getFormatCode());
++    				$returnValue[$row][$column] = PHPExcel_Style_NumberFormat::toFormattedString($returnValue[$row][$column], $style->getNumberFormat()->getFormatCode(),null,$this->_toArrayDateFormat);
+     			} else {
+     				$returnValue[$row][$column] = $nullValue;
+     			}
+Only in phpexcel/Classes/PHPExcel/Writer: JSON.php

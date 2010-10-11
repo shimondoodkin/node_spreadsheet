@@ -1,0 +1,1 @@
+diff -upr orig phpexcel > phpexcel-1-7-4.patch
