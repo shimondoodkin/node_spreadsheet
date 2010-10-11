@@ -12,10 +12,9 @@ output:
       , 'asfasd'
       , '\u05d2\u05d3\u05db\u05e9\u05d3\u05d2\u05e9\u05d3\u05d2'
       , 12312
-      , '2010-10-10T10:55:00Z'
+      , Sun, 10 Oct 2010 10:55:00 GMT
       ]
     ]
-
 
 #requirements:
 this pice of software is based on php5-cli so you need to install it first.
