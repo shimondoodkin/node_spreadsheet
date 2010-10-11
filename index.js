@@ -112,8 +112,8 @@ function read(inputfile,callback,options)
       if (err) throw err;
       //if (err2) throw err;
       //console.log(data.toString());
-      callback(JSON.parse('('+data+')'));
-      //callback(eval(data));
+      //callback(JSON.parse('('+data+')'));
+      callback(eval(data));
      });
     });
    }
@@ -123,4 +123,4 @@ function read(inputfile,callback,options)
 } this.read=read;
 
 //test:
-read(__dirname+"/Book1.xls",function(obj){console.log(obj);});
+//read(__dirname+"/Book1.xls",function(obj){console.log(obj);});
