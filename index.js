@@ -60,8 +60,8 @@ function isoDateReviver(value) {
     
 function show_error(error, stdout, stderr)
 {
-  if(stdout)console.log('pango-view_stdout: ' + stdout);
-  if(stderr)console.log('pango-view_stderr: ' + stderr);
+  if(stdout)console.log('node_spreadsheet_stdout: ' + stdout);
+  if(stderr)console.log('node_spreadsheet_stderr: ' + stderr);
   if (error !== null)
   {
     console.log('node-spreadsheet last command: ' + lastcommand);

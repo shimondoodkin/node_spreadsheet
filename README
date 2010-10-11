@@ -1,6 +1,23 @@
-##node spreadsheet
-this is a solution to read excel files
+#node spreadsheet
+this is a solution to read excel files in node js
+based on PHPExcel from phpexcel.codeplex.com
 
-var spreadsheet=require('node_spreadsheet')
-//test:
-spreadsheet.read(__dirname+"/Book1.xls",function(obj){console.log(obj);});
+#example
+    var spreadsheet=require('node_spreadsheet')
+    spreadsheet.read(__dirname+"/Book1.xls",function(obj){console.log(obj);});
+
+    [ [ 'phonecol', 'ansicol', 'utfcol', 'numcol', 'datecol' ]
+    , [ '0547490305'
+      , 'asfasd'
+      , '\u05d2\u05d3\u05db\u05e9\u05d3\u05d2\u05e9\u05d3\u05d2'
+      , 12312
+      , '2010-10-10T10:55:00Z'
+      ]
+    ]
+
+
+#requirements:
+this pice of software is based on php5-cli so you need to install it first.
+like :
+
+sudo aptitude install php5-cli
