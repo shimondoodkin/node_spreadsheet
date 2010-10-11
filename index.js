@@ -46,7 +46,6 @@ function uniquerandom()
   return (newtime*10000)+random;
 } this.uniquerandom=uniquerandom();
 
-
 function isoDateReviver(value) {
   if (typeof value === 'string') {
     var a = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}(?:\.\d*)?)(?:([\+-])(\d{2})\:(\d{2}))?Z?$/.exec(value);
@@ -68,7 +67,7 @@ function show_error(error, stdout, stderr)
     console.log('node-spreadsheet error: ' + error);
   }
 }
-  // &lt;html&gt;.
+
 var exec_option={timeout:1500};
 
 function read(inputfile,callback,options)
@@ -106,16 +105,15 @@ function read(inputfile,callback,options)
   {
    if(code==0)
    {
-    //console.log(1);
     fs.readFile(file, 'utf-8', function (err, data) 
     {
-     //console.log(1);
      fs.unlink(file, function(err2)
      {
       if (err) throw err;
       //if (err2) throw err;
       //console.log(data.toString());
-      callback(eval(data));
+      callback(JSON.parse('('+data+')'));
+      //callback(eval(data));
      });
     });
    }
@@ -125,4 +123,4 @@ function read(inputfile,callback,options)
 } this.read=read;
 
 //test:
-//read(__dirname+"/Book1.xls",function(obj){console.log(obj);});
+read(__dirname+"/Book1.xls",function(obj){console.log(obj);});

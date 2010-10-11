@@ -1,11 +1,12 @@
 #node spreadsheet
 this is a solution to read excel files in node js
 based on PHPExcel from phpexcel.codeplex.com
+php based is better then nothing
 
 #example
     var spreadsheet=require('node_spreadsheet')
     spreadsheet.read(__dirname+"/Book1.xls",function(obj){console.log(obj);});
-
+output:
     [ [ 'phonecol', 'ansicol', 'utfcol', 'numcol', 'datecol' ]
     , [ '0547490305'
       , 'asfasd'
