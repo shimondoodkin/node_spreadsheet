@@ -46,9 +46,12 @@ function uniquerandom()
   return (newtime*10000)+random;
 } this.uniquerandom=uniquerandom();
 
-function isoDateReviver(value) {
-  if (typeof value === 'string') {
-    var a = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}(?:\.\d*)?)(?:([\+-])(\d{2})\:(\d{2}))?Z?$/.exec(value);
+var isoDateReviver_re=/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}(?:\.\d*)?)(?:([\+-])(\d{2})\:(\d{2}))?Z?$/;
+function isoDateReviver(key, value)
+{
+  if (typeof value === 'string')
+  {
+    var a = isoDateReviver_re.exec(value);
       if (a) {
         var utcMilliseconds = Date.UTC(+a[1], +a[2] - 1, +a[3], +a[4], +a[5], +a[6]);
         return new Date(utcMilliseconds);
@@ -111,8 +114,8 @@ function read(inputfile,callback,options)
      {
       if (err) throw err;
       //if (err2) throw err;
-      //console.log(data.toString());
-      callback(JSON.parse(data));
+      console.log(data.toString());
+      callback(JSON.parse(data,isoDateReviver));
       //callback(eval(data));
      });
     });
@@ -123,4 +126,4 @@ function read(inputfile,callback,options)
 } this.read=read;
 
 //test:
-//read(__dirname+"/Book1.xls",function(obj){console.log(obj);});
+read(__dirname+"/Book1.xls",function(obj){console.log(obj);});
