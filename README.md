@@ -8,7 +8,7 @@ php based is better then nothing
     spreadsheet.read(__dirname+"/Book1.xls",function(obj){console.log(obj);});
 output:
     [ [ 'phonecol', 'ansicol', 'utfcol', 'numcol', 'datecol' ]
-    , [ '0547490305'
+    , [ '0547412345'
       , 'asfasd'
       , '\u05d2\u05d3\u05db\u05e9\u05d3\u05d2\u05e9\u05d3\u05d2'
       , 12312
