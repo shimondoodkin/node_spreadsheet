@@ -234,7 +234,7 @@ class PHPExcel_Writer_JSON implements PHPExcel_Writer_IWriter {
        }
        else
        {
-        $data .= "'" . addslashes($row[$i]) . "'";
+        $data .= "\"" . addslashes($row[$i]) . "\"";
        }
       }
       $data .= "]"; 
