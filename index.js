@@ -72,6 +72,48 @@ function show_error(error, stdout, stderr)
 }
 
 var exec_option={timeout:1500};
+function tocolnames(list,colnamesarr,eachcall)
+{
+ var retlist=[];
+ var cols_len=colnamesarr.length
+
+ for(var i=0,l=list.length;i<l;i++)
+ {
+  var obj={}; 
+  for( var j=0,items_len=list[i].length; j<cols_len && j<items_len ; j++)
+  {
+   obj[colnamesarr[j]]=list[i][j];
+  }
+  if(eachcall)eachcall(obj);
+  retlist[i]=obj;
+ }
+ return retlist;
+}
+
+
+
+function readcols(inputfile,colnamesarr,callback,options)
+{
+ read(inputfile,function(list){
+
+  var listofobjs=tocolnames(list,colnamesarr);
+  delete list;
+  callback(listofobjs); 
+ 
+ },options);
+};this.readcols=readcols;
+
+function readcols_each(inputfile,colnamesarr,eachcall,callback,options)
+{
+ read(inputfile,function(list){
+  
+  var listofobjs=tocolnames(list,colnamesarr,eachcall);
+  delete list;
+  callback(listofobjs); 
+  
+ },options);
+};this.readcols_each=readcols_each;
+
 
 function read(inputfile,callback,options)
 {
