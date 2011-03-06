@@ -238,6 +238,7 @@ class PHPExcel_Writer_JSON implements PHPExcel_Writer_IWriter {
        }
       }
       $data .= "]"; 
+      $data=str_replace("\\'", "'", $data);
 			//$this->_writeLine($fileHandle, $row);
 			$finalData .= ($count>0?",":"").$data;
 			$count++;

@@ -44,7 +44,7 @@ function uniquerandom()
   } while (lastrandom.indexOf(random)!=-1);
   lastrandom.push(random);
   return (newtime*10000)+random;
-} this.uniquerandom=uniquerandom();
+} this.uniquerandom=uniquerandom;
 
 var isoDateReviver_re=/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}(?:\.\d*)?)(?:([\+-])(\d{2})\:(\d{2}))?Z?$/;
 function isoDateReviver(key, value)
@@ -117,8 +117,8 @@ function readcols_each(inputfile,colnamesarr,eachcall,callback,options)
 
 function read(inputfile,callback,options)
 {
-  if(!options)options={}
-  var file=('file' in options) ? this.tempdir+options['file'] : this.tempdir+uniquerandom()+'.png';
+  if(!options)options={};
+  var file=('file' in options) ? that.tempdir+options['file'] : that.tempdir+that.uniquerandom()+'.json';
 
   var args_str='',args=[];
   
@@ -156,16 +156,60 @@ function read(inputfile,callback,options)
      {
       if (err) throw err;
       //if (err2) throw err;
-  //    console.log(data.toString());
+      console.log(data.toString());
       callback(JSON.parse(data,isoDateReviver));
       //callback(eval(data));
      });
     });
    }
    else
-    callback([["FILE NOT FOUND"]])
+   {
+    console.log(cmd)
+    callback([["FILE NOT FOUND"]]) 
+   } 
   });
 } this.read=read;
 
 //test:
 //read(__dirname+"/Book1.xls",function(obj){console.log(obj);});
+
+
+function write(options,callback)
+{
+  // add missing options from this.options
+  var this_options=that.options;
+  if(this_options)
+  for(name in this_options)
+  {
+   if(Object.hasOwnProperty.call(this_options,name))
+   {
+    if(!(name in options))
+    {
+     options[name]=this_options[name];
+    }
+   }
+  }
+  //
+  
+  var args_str='-f "'+addslashes(__dirname+'/convert.php')+'"';  
+  var cmd='export LANG=en_US.UTF-8;php '+args_str+"",exec_option;
+
+  lastcommand=cmd;
+  var child = exec(cmd,  show_error );
+  child.stdin.write(JSON.stringify(options));
+  child.stdin.end();
+  //var child = exec('export LANG=en_US.UTF-8;env ',  show_error );
+  child.on('exit',function (code, signal)
+  {
+   if(callback)
+   {
+   if(code==0)
+   {
+    callback(true);
+   }
+   else
+   {
+    callback(false)
+   }}
+  });
+} this.write=write;

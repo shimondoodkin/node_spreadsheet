@@ -1,4 +1,19 @@
 <?php
+
+/*
+$json =file_get_contents('php://stdin');//rawurldecode($_SERVER['argv'][1]);
+$obj=json_decode($json,true);
+//echo '\r\ndebug1:\r\n';
+//echo "\r\n|".$json."|\r\n";
+//var_dump($obj);
+if(!$obj)
+{
+$obj=json_decode(stripslashes($json));
+//echo '\r\ndebug2:\r\n';
+//var_dump($obj);
+}
+*/
+
 // php -f convert.php myfile.xlsx myfile.csv
 
 if($_SERVER['argc'] < 3) {
@@ -27,6 +42,7 @@ if($_SERVER['argc'] < 3) {
 	$objCSV->setUseBOM(false);
 //	echo date('H:i:s') . " Saveing file\n";
 	$objCSV->save($_SERVER['argv'][2]);
+	//$objCSV->save('/tmp/json42');
 //	echo date('H:i:s') . " Done\n";
 // if input is csv then convert charset : iso-8859-8 -> utf-8
 ?>
