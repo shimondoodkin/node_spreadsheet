@@ -17,7 +17,7 @@ output:
     ]
 
 #requirements:
-this pice of software is based on php5-cli so you need to install it first.
+this piece of software is based on php5-cli so you need to install it first.
 like :
 
 sudo aptitude install php5-cli
