@@ -22,7 +22,9 @@ if($_SERVER['argc'] < 3) {
 }
 	error_reporting(E_ALL);
 
-	date_default_timezone_set('Asia/Jerusalem');
+	date_default_timezone_set('Asia/Jerusalem'); // 
+	
+	ini_set("auto_detect_line_endings", true); // https://github.com/shimondoodkin/node_spreadsheet/issues/2
 	
 	/** PHPExcel_IOFactory */
 	require_once 'phpexcel/Classes/PHPExcel/IOFactory.php';
